@@ -17,12 +17,11 @@ public class DBHelper {
     private String sql;
 
     public DBHelper() {
-        
-        database = "servDb";
+
+        database = "SearchEngineDb";
         driver = "org.apache.derby.jdbc.ClientDriver";
         url = "jdbc:derby:" + database + ";create=true";
-        
-        
+
         try {
             //step 1 load driver
             Class.forName(driver).newInstance();
@@ -48,44 +47,53 @@ public class DBHelper {
             System.out.println("cannot create statement");
             System.exit(-1);
         }
-
+/*
         try {
-            //step 4 create sql command and execute
-/*  create table
-                sql = "CREATE TABLE person(name VARCHAR(15),lastname VARCHAR(15))";
-                stm.execute(sql);
-      */
-
-
- /* update
-            sql = "UPDATE person SET name = 'Somkid' WHERE name = 'Somchai'";
-            stm.executeUpdate(sql);
-             */
- /*
-            sql = "DELETE FROM person WHERE name = 'Somkid'";
-            stm.executeUpdate(sql);
-             */
-
-            sql = "SELECT * FROM person";
-            rs = stm.executeQuery(sql);
-
-            while (rs.next()) {
-                System.out.println(rs.getString(1) + "\t\t" + rs.getString(2));
-            }
-
-        } catch (SQLException sqle) {
-            System.out.println("step 4 : "+sqle.getMessage());
+            //step 4 create table
+            sql = "CREATE TABLE profile(name VARCHAR(15),lastname VARCHAR(15),address VARCHAR(50))";
+            stm.execute(sql);
+            
+        } catch (SQLException ex) {
+            System.out.println("cannot create table");
+            System.exit(-1);
         }
+*/
+    }
+
+    public void insertProfile(String name, String lastname, String address) throws SQLException {
+        sql = "INSERT INTO profile VALUES('" + name + "','" + lastname + "','" + address + "')";
+        stm.executeUpdate(sql);
 
     }
 
-    public void insertProfile(String name,String lastname) throws SQLException{
+    public void selectAllProfile() throws SQLException {
+        sql = "SELECT * FROM profile";
+        rs = stm.executeQuery(sql);
 
-            sql = "INSERT INTO person VALUES('Somchai5','Jaidee1')";
-            stm.executeUpdate(sql);
-
+        while (rs.next()) {
+            System.out.println(rs.getString(1) + "\t\t" + rs.getString(2)+ "\t\t" + rs.getString(3));
+        }
     }
-    
+
+    public void searchProfile(String table, String msg) throws SQLException {
+        sql = "SELECT * FROM profile where " + table + " like '" + msg + "'";
+        rs = stm.executeQuery(sql);
+
+        while (rs.next()) {
+            System.out.println(rs.getString(1) + "\t\t" + rs.getString(2));
+        }
+    }
+
+    public void deleteProfile(String field, String msg) throws SQLException {
+        sql = "DELETE FROM profile WHERE " + field + " = '" + msg + "'";
+        stm.executeUpdate(sql);
+    }
+
+    public void updateProfile() throws SQLException {
+        sql = "UPDATE profile SET name = 'Somkid' WHERE name = 'Somchai'";
+        stm.executeUpdate(sql);
+    }
+
     public static void main(String[] args) {
 
     }

@@ -1,10 +1,21 @@
 
+import java.sql.SQLException;
+
 public class SearchEngine extends javax.swing.JFrame {
 
     DBHelper mydb;
 
     public SearchEngine() {
         mydb = new DBHelper();
+        /*
+        try {
+            mydb.selectAllProfile();
+        } catch (SQLException ex) {
+            System.out.println("Can't show All Profile");
+            System.exit(-1);
+        }
+        */
+
         initComponents();
     }
 
@@ -153,11 +164,19 @@ public class SearchEngine extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_searchActionPerformed
-        System.out.println("test : "+tf_search.getText());
+        System.out.println("test : " + tf_search.getText());
+        try{
+            mydb.insertProfile("คนไทย","หัวใจ","โค๊ดดิ่ง");
+        mydb.selectAllProfile();
+        }catch(SQLException se){
+            System.out.println("error search : "+se);
+        }
+        
+        
     }//GEN-LAST:event_bt_searchActionPerformed
 
     public static void main(String args[]) {
-       
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -182,8 +201,7 @@ public class SearchEngine extends javax.swing.JFrame {
                 new SearchEngine().setVisible(true);
             }
         });
-        
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
