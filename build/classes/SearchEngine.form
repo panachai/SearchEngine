@@ -39,9 +39,9 @@
                       </Group>
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="tf_search1" pref="252" max="32767" attributes="0"/>
-                          <Component id="tf_search2" max="32767" attributes="0"/>
-                          <Component id="tf_search3" max="32767" attributes="0"/>
+                          <Component id="tf_name" pref="252" max="32767" attributes="0"/>
+                          <Component id="tf_lastname" max="32767" attributes="0"/>
+                          <Component id="tf_address" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -63,9 +63,9 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jButton3" min="-2" pref="90" max="-2" attributes="0"/>
+                          <Component id="bt_update" min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="bt_insert" min="-2" pref="90" max="-2" attributes="0"/>
-                          <Component id="jButton4" min="-2" pref="90" max="-2" attributes="0"/>
+                          <Component id="bt_delete" min="-2" pref="90" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -88,26 +88,26 @@
                   <Group type="102" attributes="0">
                       <Component id="bt_insert" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                      <Component id="bt_update" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                      <Component id="bt_delete" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="tf_search1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tf_name" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="tf_search2" min="-2" max="-2" attributes="0"/>
+                          <Component id="tf_lastname" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="tf_search3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tf_address" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -144,10 +144,30 @@
         <Component class="javax.swing.JTable" name="tb_result">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="0" rowCount="4"/>
+              <Table columnCount="3" rowCount="0">
+                <Column editable="true" title="NAME" type="java.lang.String"/>
+                <Column editable="true" title="LASTNAME" type="java.lang.String"/>
+                <Column editable="true" title="ADDRESS" type="java.lang.String"/>
+              </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
-              <TableColumnModel selectionModel="0"/>
+              <TableColumnModel selectionModel="0">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+              </TableColumnModel>
             </Property>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
@@ -171,21 +191,24 @@
         <Property name="text" type="java.lang.String" value="INSERT"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton3">
+    <Component class="javax.swing.JButton" name="bt_update">
       <Properties>
         <Property name="text" type="java.lang.String" value="UPDATE"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_updateActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton4">
+    <Component class="javax.swing.JButton" name="bt_delete">
       <Properties>
         <Property name="text" type="java.lang.String" value="DELETE"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="tf_search1">
+    <Component class="javax.swing.JTextField" name="tf_name">
     </Component>
-    <Component class="javax.swing.JTextField" name="tf_search2">
+    <Component class="javax.swing.JTextField" name="tf_lastname">
     </Component>
-    <Component class="javax.swing.JTextField" name="tf_search3">
+    <Component class="javax.swing.JTextField" name="tf_address">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
