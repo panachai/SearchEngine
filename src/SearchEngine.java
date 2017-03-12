@@ -18,24 +18,24 @@ public class SearchEngine extends javax.swing.JFrame {
     private ResultSet rs;
     private String sql;
     Object cbCategory;
+    private int selectedRowIndex;
 
     private DefaultTableModel model;
 
     public SearchEngine() {
         initComponents();
-        
+
         bt_update.setEnabled(false);
         bt_delete.setEnabled(false);
-        
+
         bt_add.setEnabled(false);
         bt_cancel.setEnabled(false);
-        
-        
         tf_name.setEnabled(false);
         tf_lastname.setEnabled(false);
         tf_address.setEnabled(false);
-        
-        
+
+        lb_warningB.setText("");
+        lb_warningA.setText("");
 
         model = (DefaultTableModel) tb_result.getModel();
 
@@ -86,7 +86,7 @@ public class SearchEngine extends javax.swing.JFrame {
 
     public void selectAllProfile() throws SQLException {
         model.setRowCount(0);
-        
+
         sql = "SELECT * FROM profile";
         rs = stm.executeQuery(sql);
         try {
@@ -101,7 +101,16 @@ public class SearchEngine extends javax.swing.JFrame {
 
     public void searchProfile(String table, String msg) throws SQLException {
         model.setRowCount(0);
-        
+
+        bt_update.setEnabled(false);
+        bt_delete.setEnabled(false);
+
+        bt_add.setEnabled(false);
+        bt_cancel.setEnabled(false);
+        tf_name.setEnabled(false);
+        tf_lastname.setEnabled(false);
+        tf_address.setEnabled(false);
+
         sql = "SELECT * FROM profile where " + table + " like '%" + msg + "%'";
         rs = stm.executeQuery(sql);
 
@@ -115,7 +124,7 @@ public class SearchEngine extends javax.swing.JFrame {
         stm.executeUpdate(sql);
     }
 
-    public void updateProfile() throws SQLException {
+    public void updateProfile(int index, String name, String lastname, String address) throws SQLException {
         sql = "UPDATE profile SET name = 'Somkid' WHERE name = 'Somchai'";
         stm.executeUpdate(sql);
     }
@@ -154,9 +163,17 @@ public class SearchEngine extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         bt_add = new javax.swing.JButton();
         bt_cancel = new javax.swing.JButton();
+        lb_warningA = new javax.swing.JLabel();
+        lb_warningB = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SearchEngine");
+
+        tf_search.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_searchFocusGained(evt);
+            }
+        });
 
         bt_search.setText("SEARCH");
         bt_search.addActionListener(new java.awt.event.ActionListener() {
@@ -181,11 +198,25 @@ public class SearchEngine extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tb_result.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tb_result.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tb_resultFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tb_resultFocusLost(evt);
+            }
+        });
         jScrollPane1.setViewportView(tb_result);
 
         cb_category.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name", "Lastname", "Address" }));
 
         bt_insert.setText("INSERT");
+        bt_insert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_insertActionPerformed(evt);
+            }
+        });
 
         bt_update.setText("UPDATE");
         bt_update.addActionListener(new java.awt.event.ActionListener() {
@@ -195,6 +226,11 @@ public class SearchEngine extends javax.swing.JFrame {
         });
 
         bt_delete.setText("DELETE");
+        bt_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_deleteActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Name");
 
@@ -203,8 +239,24 @@ public class SearchEngine extends javax.swing.JFrame {
         jLabel3.setText("Address");
 
         bt_add.setText("ADD");
+        bt_add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_addActionPerformed(evt);
+            }
+        });
 
         bt_cancel.setText("Cancel");
+        bt_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_cancelActionPerformed(evt);
+            }
+        });
+
+        lb_warningA.setForeground(new java.awt.Color(255, 0, 0));
+        lb_warningA.setText("jLabel4");
+
+        lb_warningB.setForeground(new java.awt.Color(255, 0, 0));
+        lb_warningB.setText("jLabel4");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -242,7 +294,13 @@ public class SearchEngine extends javax.swing.JFrame {
                             .addComponent(bt_update, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bt_insert, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bt_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lb_warningA)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lb_warningB)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -253,6 +311,8 @@ public class SearchEngine extends javax.swing.JFrame {
                     .addComponent(bt_search)
                     .addComponent(cb_category, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lb_warningA, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -261,25 +321,26 @@ public class SearchEngine extends javax.swing.JFrame {
                         .addComponent(bt_update)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_delete)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lb_warningB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tf_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tf_lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tf_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
+                            .addComponent(jLabel2)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addComponent(bt_add)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_cancel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tf_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -288,28 +349,216 @@ public class SearchEngine extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_searchActionPerformed
+        lb_warningA.setText("");
+
         String msg = tf_search.getText();   //get search bar
         cbCategory = cb_category.getSelectedItem();
-        if (cbCategory != null) {
-            String selectedItemStr = cbCategory.toString();
-            
-            System.out.println("test combobox : "+selectedItemStr);
 
-            try {
-                searchProfile(selectedItemStr, msg);
+        if (!(tf_search.getText().equals(""))) {
+            if (cbCategory != null) {
+                String selectedItemStr = cbCategory.toString();
 
-            } catch (SQLException se) {
-                System.out.println("Error search : " + se);
+                System.out.println("test combobox : " + selectedItemStr);
+
+                try {
+                    searchProfile(selectedItemStr, msg);
+
+                } catch (SQLException se) {
+                    System.out.println("Error search : " + se);
+                }
+
             }
-
+        } else {
+            lb_warningA.setText(" โปรดป้อนสิ่งที่ต้องการค้นหา");
         }
 
 
     }//GEN-LAST:event_bt_searchActionPerformed
 
     private void bt_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_updateActionPerformed
-        // TODO add your handling code here:
+
+        //ด้านบน
+        tf_search.setEnabled(false);
+        cb_category.setEnabled(false);
+        bt_search.setEnabled(false);
+        //ด้านขวา
+        bt_insert.setEnabled(false);
+        bt_update.setEnabled(false);
+        bt_delete.setEnabled(false);
+
+        //jtable
+        tb_result.setEnabled(false);
+
+        //ด้านล่างขวา
+        bt_add.setEnabled(true);
+        bt_cancel.setEnabled(true);
+        //ด้านล่าง
+        tf_name.setEnabled(true);
+        tf_lastname.setEnabled(true);
+        tf_address.setEnabled(true);
+
+        //ดู index
+        selectedRowIndex = tb_result.getSelectedRow();
+        
+        //set ค่าในช่องว่างด้านล่าง
+        tf_name.setText(model.getValueAt(selectedRowIndex, 0).toString());
+        tf_lastname.setText(model.getValueAt(selectedRowIndex, 1).toString());
+        tf_address.setText(model.getValueAt(selectedRowIndex, 2).toString());
+        
+        //model.setRowCount(0);
+        tf_search.setText("");
+        lb_warningA.setText("");
+        bt_add.setText("UPDATE");
+
+
     }//GEN-LAST:event_bt_updateActionPerformed
+
+    private void bt_insertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_insertActionPerformed
+
+        //ด้านบน
+        tf_search.setEnabled(false);
+        cb_category.setEnabled(false);
+        bt_search.setEnabled(false);
+        //ด้านขวา
+        bt_insert.setEnabled(false);
+        bt_update.setEnabled(false);
+        bt_delete.setEnabled(false);
+        //jtable
+        tb_result.setEnabled(false);
+        //ด้านล่างขวา
+        bt_add.setEnabled(true);
+        bt_cancel.setEnabled(true);
+        //ด้านล่าง
+        tf_name.setEnabled(true);
+        tf_lastname.setEnabled(true);
+        tf_address.setEnabled(true);
+
+        model.setRowCount(0);
+        tf_search.setText("");
+        lb_warningA.setText("");
+        bt_add.setText("ADD");
+    }//GEN-LAST:event_bt_insertActionPerformed
+
+    private void bt_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_addActionPerformed
+        lb_warningB.setText("");
+
+        String btadd_update = bt_add.getText().toString();
+
+        if (tf_name.getText().equals("")) {
+            lb_warningB.setText("ป้อนค่าในช่อง Name");
+        } else if (tf_lastname.getText().equals("")) {
+            lb_warningB.setText("ป้อนค่าในช่อง Lastname");
+        } else if (tf_address.getText().equals("")) {
+            lb_warningB.setText("ป้อนค่าในช่อง Address");
+        } else {
+            /*
+            //ด้านบน
+            tf_search.setEnabled(true);
+            cb_category.setEnabled(true);
+            bt_search.setEnabled(true);
+            //ด้านขวา
+            bt_insert.setEnabled(true);
+            bt_update.setEnabled(false);
+            bt_delete.setEnabled(false);
+            //jtable
+            tb_result.setEnabled(true);
+            //ด้านล่างขวา
+            bt_add.setEnabled(false);
+            bt_cancel.setEnabled(false);
+            //ด้านล่าง
+            tf_name.setEnabled(false);
+            tf_lastname.setEnabled(false);
+            tf_address.setEnabled(false);
+            
+             */
+            try {
+                if (btadd_update.equals("ADD")) {
+                    //process
+                    insertProfile(tf_name.getText(), tf_lastname.getText(), tf_address.getText());
+                } else if (btadd_update.equals("UPDATE")) {
+
+                    DefaultTableModel model = (DefaultTableModel) tb_result.getModel();
+                    int selectedRowIndex = tb_result.getSelectedRow();
+
+                    System.out.println("index : " + selectedRowIndex);
+                    
+                    //model.setValueAt(tf_name.getText().toString(), selectedRowIndex, 0);
+                    
+                    /*
+                    String nameU = model.getValueAt(selectedRowIndex, 0).toString();
+                    
+                    System.out.println("nameU : "+nameU);
+                    String lastU = model.getValueAt(selectedRowIndex, 1).toString();
+                    String addressU = model.getValueAt(selectedRowIndex, 2).toString();
+                     */
+                    //updateProfile(tf_name.getText(), tf_lastname.getText(), tf_address.getText());
+                }
+
+            } catch (SQLException ex) {
+            }
+            /*
+            tf_name.setText("");
+            tf_lastname.setText("");
+            tf_address.setText("");
+            selectedRowIndex = -1;
+             */
+
+        }
+    }//GEN-LAST:event_bt_addActionPerformed
+
+    private void bt_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_deleteActionPerformed
+
+        //ดู index
+        selectedRowIndex = tb_result.getSelectedRow();
+        System.out.println("index : " + selectedRowIndex);
+
+        tf_search.setText("");
+        lb_warningA.setText("");
+
+    }//GEN-LAST:event_bt_deleteActionPerformed
+
+    private void bt_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_cancelActionPerformed
+        //ด้านบน
+        tf_search.setEnabled(true);
+        cb_category.setEnabled(true);
+        bt_search.setEnabled(true);
+        //ด้านขวา
+        bt_insert.setEnabled(true);
+        bt_update.setEnabled(false);
+        bt_delete.setEnabled(false);
+        //jtable
+        tb_result.setEnabled(true);
+        //ด้านล่างขวา
+        bt_add.setEnabled(false);
+        bt_cancel.setEnabled(false);
+        //ด้านล่าง
+        tf_name.setEnabled(false);
+        tf_lastname.setEnabled(false);
+        tf_address.setEnabled(false);
+
+        tf_name.setText("");
+        tf_lastname.setText("");
+        tf_address.setText("");
+
+        lb_warningB.setText("");
+        selectedRowIndex = -1;
+
+    }//GEN-LAST:event_bt_cancelActionPerformed
+
+    private void tf_searchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_searchFocusGained
+        lb_warningA.setText("");
+    }//GEN-LAST:event_tf_searchFocusGained
+
+    private void tb_resultFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tb_resultFocusGained
+        // ด้านขวา
+        bt_insert.setEnabled(true);
+        bt_update.setEnabled(true);
+        bt_delete.setEnabled(true);
+    }//GEN-LAST:event_tb_resultFocusGained
+
+    private void tb_resultFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tb_resultFocusLost
+
+    }//GEN-LAST:event_tb_resultFocusLost
 
     public static void main(String args[]) {
 
@@ -353,6 +602,8 @@ public class SearchEngine extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lb_warningA;
+    private javax.swing.JLabel lb_warningB;
     private javax.swing.JTable tb_result;
     private javax.swing.JTextField tf_address;
     private javax.swing.JTextField tf_lastname;
