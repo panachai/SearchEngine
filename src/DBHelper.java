@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JTextField;
 
 public class DBHelper {
 
@@ -16,9 +17,12 @@ public class DBHelper {
     private String sql;
 
     public DBHelper() {
+        
         database = "servDb";
         driver = "org.apache.derby.jdbc.ClientDriver";
         url = "jdbc:derby:" + database + ";create=true";
+        
+        
         try {
             //step 1 load driver
             Class.forName(driver).newInstance();
@@ -50,11 +54,9 @@ public class DBHelper {
 /*  create table
                 sql = "CREATE TABLE person(name VARCHAR(15),lastname VARCHAR(15))";
                 stm.execute(sql);
-             */
- /*  insert
-            sql = "INSERT INTO person VALUES('Somchai5','Jaidee1')";
-            stm.executeUpdate(sql);
-             */
+      */
+
+
  /* update
             sql = "UPDATE person SET name = 'Somkid' WHERE name = 'Somchai'";
             stm.executeUpdate(sql);
@@ -72,11 +74,18 @@ public class DBHelper {
             }
 
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
+            System.out.println("step 4 : "+sqle.getMessage());
         }
 
     }
 
+    public void insertProfile(String name,String lastname) throws SQLException{
+
+            sql = "INSERT INTO person VALUES('Somchai5','Jaidee1')";
+            stm.executeUpdate(sql);
+
+    }
+    
     public static void main(String[] args) {
 
     }

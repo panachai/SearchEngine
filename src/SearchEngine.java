@@ -34,6 +34,11 @@ public class SearchEngine extends javax.swing.JFrame {
         setTitle("SearchEngine");
 
         bt_search.setText("SEARCH");
+        bt_search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_searchActionPerformed(evt);
+            }
+        });
 
         tb_result.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -146,6 +151,10 @@ public class SearchEngine extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void bt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_searchActionPerformed
+        System.out.println("test : "+tf_search.getText());
+    }//GEN-LAST:event_bt_searchActionPerformed
 
     public static void main(String args[]) {
        
