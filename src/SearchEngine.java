@@ -19,6 +19,7 @@ public class SearchEngine extends javax.swing.JFrame {
     private String sql;
     Object cbCategory;
     private int selectedRowIndex;
+    private int index;
 
     private DefaultTableModel model;
 
@@ -91,8 +92,7 @@ public class SearchEngine extends javax.swing.JFrame {
             System.out.println("cannot insert : " + ex);
             System.exit(-1);
         }
-*/
-        
+         */
         try {
             selectAllProfile();
 
@@ -150,7 +150,7 @@ public class SearchEngine extends javax.swing.JFrame {
     }
 
     public void updateProfile(int index, String name, String lastname, String address) throws SQLException {
-        sql = "UPDATE profile SET name = 'Somkid' WHERE name = 'Somchai'";
+        sql = "UPDATE profile SET name = '" + name + "',lastname = '" + lastname + "',address = '" + address + "' WHERE id = " + index;
         stm.executeUpdate(sql);
     }
 
@@ -413,11 +413,12 @@ public class SearchEngine extends javax.swing.JFrame {
         selectedRowIndex = tb_result.getSelectedRow();
 
         //set ค่าในช่องว่างด้านล่าง
-        tf_name.setText(model.getValueAt(selectedRowIndex, 0).toString());
-        tf_lastname.setText(model.getValueAt(selectedRowIndex, 1).toString());
-        tf_address.setText(model.getValueAt(selectedRowIndex, 2).toString());
+        tf_name.setText(model.getValueAt(selectedRowIndex, 1).toString());
+        tf_lastname.setText(model.getValueAt(selectedRowIndex, 2).toString());
+        tf_address.setText(model.getValueAt(selectedRowIndex, 3).toString());
 
         //model.setRowCount(0);
+        index = Integer.parseInt(model.getValueAt(selectedRowIndex, 0).toString());
         tf_search.setText("");
         lb_warningA.setText("");
         bt_add.setText("UPDATE");
@@ -463,7 +464,7 @@ public class SearchEngine extends javax.swing.JFrame {
         } else if (tf_address.getText().equals("")) {
             lb_warningB.setText("ป้อนค่าในช่อง Address");
         } else {
-            
+
             //ด้านบน
             tf_search.setEnabled(true);
             cb_category.setEnabled(true);
@@ -481,8 +482,6 @@ public class SearchEngine extends javax.swing.JFrame {
             tf_name.setEnabled(false);
             tf_lastname.setEnabled(false);
             tf_address.setEnabled(false);
-            
-             
 
             if (btadd_update.equals("ADD")) {
                 try {
@@ -499,22 +498,23 @@ public class SearchEngine extends javax.swing.JFrame {
                 System.out.println("index : " + selectedRowIndex);
 
                 //model.setValueAt(tf_name.getText().toString(), selectedRowIndex, 0);
-                /*
-                    String nameU = model.getValueAt(selectedRowIndex, 0).toString();
-                    
-                    System.out.println("nameU : "+nameU);
-                    String lastU = model.getValueAt(selectedRowIndex, 1).toString();
-                    String addressU = model.getValueAt(selectedRowIndex, 2).toString();
-                 */
-                //updateProfile(tf_name.getText(), tf_lastname.getText(), tf_address.getText());
+                
+                String nameU = model.getValueAt(selectedRowIndex, 0).toString();
+                String lastU = model.getValueAt(selectedRowIndex, 1).toString();
+                String addressU = model.getValueAt(selectedRowIndex, 2).toString();
+
+                try {
+                    updateProfile(index, tf_name.getText(), tf_lastname.getText(), tf_address.getText());
+                } catch (SQLException ex) {
+                    System.out.println("can't update : "+ex);
+                }
             }
 
-            
             tf_name.setText("");
             tf_lastname.setText("");
             tf_address.setText("");
             selectedRowIndex = -1;
-            
+
         }
     }//GEN-LAST:event_bt_addActionPerformed
 
