@@ -69,17 +69,42 @@ public class SearchEngine extends javax.swing.JFrame {
             System.exit(-1);
         }
 
+        /*
+        try {
+            //step 4 create table
+
+            //sql = "CREATE TABLE profile(ID INTEGER PRIMARY KEY AUTO_INCREMENT,name VARCHAR(15),lastname VARCHAR(15),address VARCHAR(50))";
+            sql = "CREATE TABLE profile(ID INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),name VARCHAR(15),lastname VARCHAR(15),address VARCHAR(50))";
+            
+            stm.execute(sql);
+
+        } catch (SQLException ex) {
+            System.out.println("cannot create table : "+ex);
+            System.exit(-1);
+        }
+
+        try {
+            sql = "INSERT INTO profile (name,lastname,address)" + "VALUES ( 'Paul', '32', 'California')";
+            stm.execute(sql);
+
+        } catch (SQLException ex) {
+            System.out.println("cannot insert : " + ex);
+            System.exit(-1);
+        }
+*/
+        
         try {
             selectAllProfile();
 
         } catch (SQLException ex) {
-            System.out.println("Can't show All Profile");
+            System.out.println("Can't show All Profile : " + ex);
             System.exit(-1);
         }
+
     }
 
     public void insertProfile(String name, String lastname, String address) throws SQLException {
-        sql = "INSERT INTO profile VALUES('" + name + "','" + lastname + "','" + address + "')";
+        sql = "INSERT INTO profile (name,lastname,address) VALUES('" + name + "','" + lastname + "','" + address + "')";
         stm.executeUpdate(sql);
 
     }
@@ -91,7 +116,7 @@ public class SearchEngine extends javax.swing.JFrame {
         rs = stm.executeQuery(sql);
         try {
             while (rs.next()) {
-                model.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+                model.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)});
             }
         } catch (SQLException ex) {
             System.out.println("Can't show All Profile");
@@ -115,7 +140,7 @@ public class SearchEngine extends javax.swing.JFrame {
         rs = stm.executeQuery(sql);
 
         while (rs.next()) {
-            model.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+            model.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)});
         }
     }
 
@@ -129,19 +154,6 @@ public class SearchEngine extends javax.swing.JFrame {
         stm.executeUpdate(sql);
     }
 
-    /*
-    public void createTable() {
-        try {
-            //step 4 create table
-            sql = "CREATE TABLE profile(name VARCHAR(15),lastname VARCHAR(15),address VARCHAR(50))";
-            stm.execute(sql);
-
-        } catch (SQLException ex) {
-            System.out.println("cannot create table");
-            System.exit(-1);
-        }
-    }
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -187,11 +199,11 @@ public class SearchEngine extends javax.swing.JFrame {
 
             },
             new String [] {
-                "NAME", "LASTNAME", "ADDRESS"
+                "ID", "NAME", "LASTNAME", "ADDRESS"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -399,12 +411,12 @@ public class SearchEngine extends javax.swing.JFrame {
 
         //ดู index
         selectedRowIndex = tb_result.getSelectedRow();
-        
+
         //set ค่าในช่องว่างด้านล่าง
         tf_name.setText(model.getValueAt(selectedRowIndex, 0).toString());
         tf_lastname.setText(model.getValueAt(selectedRowIndex, 1).toString());
         tf_address.setText(model.getValueAt(selectedRowIndex, 2).toString());
-        
+
         //model.setRowCount(0);
         tf_search.setText("");
         lb_warningA.setText("");
@@ -451,7 +463,7 @@ public class SearchEngine extends javax.swing.JFrame {
         } else if (tf_address.getText().equals("")) {
             lb_warningB.setText("ป้อนค่าในช่อง Address");
         } else {
-            /*
+            
             //ด้านบน
             tf_search.setEnabled(true);
             cb_category.setEnabled(true);
@@ -470,39 +482,39 @@ public class SearchEngine extends javax.swing.JFrame {
             tf_lastname.setEnabled(false);
             tf_address.setEnabled(false);
             
-             */
-            try {
-                if (btadd_update.equals("ADD")) {
+             
+
+            if (btadd_update.equals("ADD")) {
+                try {
                     //process
                     insertProfile(tf_name.getText(), tf_lastname.getText(), tf_address.getText());
-                } else if (btadd_update.equals("UPDATE")) {
+                } catch (SQLException ex) {
+                    System.out.println("Insert error : " + ex);
+                }
+            } else if (btadd_update.equals("UPDATE")) {
 
-                    DefaultTableModel model = (DefaultTableModel) tb_result.getModel();
-                    int selectedRowIndex = tb_result.getSelectedRow();
+                DefaultTableModel model = (DefaultTableModel) tb_result.getModel();
+                int selectedRowIndex = tb_result.getSelectedRow();
 
-                    System.out.println("index : " + selectedRowIndex);
-                    
-                    //model.setValueAt(tf_name.getText().toString(), selectedRowIndex, 0);
-                    
-                    /*
+                System.out.println("index : " + selectedRowIndex);
+
+                //model.setValueAt(tf_name.getText().toString(), selectedRowIndex, 0);
+                /*
                     String nameU = model.getValueAt(selectedRowIndex, 0).toString();
                     
                     System.out.println("nameU : "+nameU);
                     String lastU = model.getValueAt(selectedRowIndex, 1).toString();
                     String addressU = model.getValueAt(selectedRowIndex, 2).toString();
-                     */
-                    //updateProfile(tf_name.getText(), tf_lastname.getText(), tf_address.getText());
-                }
-
-            } catch (SQLException ex) {
+                 */
+                //updateProfile(tf_name.getText(), tf_lastname.getText(), tf_address.getText());
             }
-            /*
+
+            
             tf_name.setText("");
             tf_lastname.setText("");
             tf_address.setText("");
             selectedRowIndex = -1;
-             */
-
+            
         }
     }//GEN-LAST:event_bt_addActionPerformed
 
@@ -567,16 +579,24 @@ public class SearchEngine extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SearchEngine.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchEngine.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SearchEngine.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchEngine.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SearchEngine.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchEngine.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SearchEngine.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchEngine.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
