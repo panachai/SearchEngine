@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class SearchEngine extends javax.swing.JFrame {
@@ -93,8 +94,7 @@ public class SearchEngine extends javax.swing.JFrame {
             System.exit(-1);
         }
          */
-        
-/* เอาไว้ใช้เทส
+ /* เอาไว้ใช้เทส
         try {
             selectAllProfile();
 
@@ -102,7 +102,7 @@ public class SearchEngine extends javax.swing.JFrame {
             System.out.println("Can't show All Profile : " + ex);
             System.exit(-1);
         }
-*/
+         */
     }
 
     public void insertProfile(String name, String lastname, String address) throws SQLException {
@@ -521,28 +521,38 @@ public class SearchEngine extends javax.swing.JFrame {
 
     private void bt_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_deleteActionPerformed
 
-        bt_update.setEnabled(false);
-        bt_delete.setEnabled(false);
+        int n = JOptionPane.showConfirmDialog(null,
+                "คุณต้องการจะลบหรือไม่",
+                "Delete confirm",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
 
-        tf_search.setText("");
-        lb_warningA.setText("");
+        if (n == 0) {
+            
+            bt_update.setEnabled(false);
+            bt_delete.setEnabled(false);
 
-        
-        //ดู index
-        selectedRowIndex = tb_result.getSelectedRow();
-        //System.out.println("index : " + selectedRowIndex);
+            tf_search.setText("");
+            lb_warningA.setText("");
 
-        index = Integer.parseInt(model.getValueAt(selectedRowIndex, 0).toString());
-        try {
-            deleteProfile(index);
-        } catch (SQLException ex) {
-            System.out.println("Error delete : "+ex);
+            //ดู index
+            selectedRowIndex = tb_result.getSelectedRow();
+            //System.out.println("index : " + selectedRowIndex);
+
+            index = Integer.parseInt(model.getValueAt(selectedRowIndex, 0).toString());
+            try {
+                deleteProfile(index);
+            } catch (SQLException ex) {
+                System.out.println("Error delete : " + ex);
+            }
+
+            tf_search.setText("");
+            lb_warningA.setText("");
+
+            model.setRowCount(0);
+            
         }
 
-        tf_search.setText("");
-        lb_warningA.setText("");
-        
-        model.setRowCount(0);
 
     }//GEN-LAST:event_bt_deleteActionPerformed
 
