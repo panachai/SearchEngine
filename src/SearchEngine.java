@@ -93,6 +93,8 @@ public class SearchEngine extends javax.swing.JFrame {
             System.exit(-1);
         }
          */
+        
+/* เอาไว้ใช้เทส
         try {
             selectAllProfile();
 
@@ -100,7 +102,7 @@ public class SearchEngine extends javax.swing.JFrame {
             System.out.println("Can't show All Profile : " + ex);
             System.exit(-1);
         }
-
+*/
     }
 
     public void insertProfile(String name, String lastname, String address) throws SQLException {
@@ -144,8 +146,8 @@ public class SearchEngine extends javax.swing.JFrame {
         }
     }
 
-    public void deleteProfile(String field, String msg) throws SQLException {
-        sql = "DELETE FROM profile WHERE " + field + " = '" + msg + "'";
+    public void deleteProfile(int id) throws SQLException {
+        sql = "DELETE FROM profile WHERE id = " + id;
         stm.executeUpdate(sql);
     }
 
@@ -498,7 +500,6 @@ public class SearchEngine extends javax.swing.JFrame {
                 System.out.println("index : " + selectedRowIndex);
 
                 //model.setValueAt(tf_name.getText().toString(), selectedRowIndex, 0);
-                
                 String nameU = model.getValueAt(selectedRowIndex, 0).toString();
                 String lastU = model.getValueAt(selectedRowIndex, 1).toString();
                 String addressU = model.getValueAt(selectedRowIndex, 2).toString();
@@ -506,7 +507,7 @@ public class SearchEngine extends javax.swing.JFrame {
                 try {
                     updateProfile(index, tf_name.getText(), tf_lastname.getText(), tf_address.getText());
                 } catch (SQLException ex) {
-                    System.out.println("can't update : "+ex);
+                    System.out.println("can't update : " + ex);
                 }
             }
 
@@ -520,12 +521,28 @@ public class SearchEngine extends javax.swing.JFrame {
 
     private void bt_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_deleteActionPerformed
 
-        //ดู index
-        selectedRowIndex = tb_result.getSelectedRow();
-        System.out.println("index : " + selectedRowIndex);
+        bt_update.setEnabled(false);
+        bt_delete.setEnabled(false);
 
         tf_search.setText("");
         lb_warningA.setText("");
+
+        
+        //ดู index
+        selectedRowIndex = tb_result.getSelectedRow();
+        //System.out.println("index : " + selectedRowIndex);
+
+        index = Integer.parseInt(model.getValueAt(selectedRowIndex, 0).toString());
+        try {
+            deleteProfile(index);
+        } catch (SQLException ex) {
+            System.out.println("Error delete : "+ex);
+        }
+
+        tf_search.setText("");
+        lb_warningA.setText("");
+        
+        model.setRowCount(0);
 
     }//GEN-LAST:event_bt_deleteActionPerformed
 
