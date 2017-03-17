@@ -154,6 +154,8 @@ public class SearchEngine extends javax.swing.JFrame {
     public void updateProfile(int index, String name, String lastname, String address) throws SQLException {
         sql = "UPDATE profile SET name = '" + name + "',lastname = '" + lastname + "',address = '" + address + "' WHERE id = " + index;
         stm.executeUpdate(sql);
+
+        model.setRowCount(0);
     }
 
     @SuppressWarnings("unchecked")
@@ -528,7 +530,7 @@ public class SearchEngine extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (n == 0) {
-            
+
             bt_update.setEnabled(false);
             bt_delete.setEnabled(false);
 
@@ -550,7 +552,7 @@ public class SearchEngine extends javax.swing.JFrame {
             lb_warningA.setText("");
 
             model.setRowCount(0);
-            
+
         }
 
 
