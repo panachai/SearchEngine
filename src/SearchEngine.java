@@ -138,9 +138,9 @@ public class SearchEngine extends javax.swing.JFrame {
         tf_lastname.setEnabled(false);
         tf_address.setEnabled(false);
         if (table.equals("Name-Lastname")) {//Name-Lastname
-            
+
             System.out.println("in Name-Lastname 2");
-            sql = "SELECT * FROM profile where name like '%" + msg + "%' or lastname like '%"+msg+"%'";
+            sql = "SELECT * FROM profile where name like '%" + msg + "%' or lastname like '%" + msg + "%'";
             rs = stm.executeQuery(sql);
             System.out.println("in Name-Lastname 2");
         } else {
@@ -430,7 +430,7 @@ public class SearchEngine extends javax.swing.JFrame {
 
         //model.setRowCount(0);
         index = Integer.parseInt(model.getValueAt(selectedRowIndex, 0).toString());
-        tf_search.setText("");
+        //tf_search.setText("");
         lb_warningA.setText("");
         bt_add.setText("UPDATE");
 
@@ -501,6 +501,7 @@ public class SearchEngine extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     System.out.println("Insert error : " + ex);
                 }
+
             } else if (btadd_update.equals("UPDATE")) {
 
                 DefaultTableModel model = (DefaultTableModel) tb_result.getModel();
@@ -518,6 +519,30 @@ public class SearchEngine extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     System.out.println("can't update : " + ex);
                 }
+
+                //refreash **ใช้ bt_search.doClick();**
+                String msg = tf_search.getText();   //get search bar
+                cbCategory = cb_category.getSelectedItem();
+
+                if (!(tf_search.getText().equals(""))) {
+                    if (cbCategory != null) {
+                        String selectedItemStr = cbCategory.toString();
+
+                        System.out.println("test combobox : " + selectedItemStr);
+
+                        try {
+                            searchProfile(selectedItemStr, msg);
+
+                        } catch (SQLException se) {
+                            System.out.println("Error search : " + se);
+                        }
+
+                    }
+                } else {
+                    lb_warningA.setText(" โปรดป้อนสิ่งที่ต้องการค้นหา");
+                }
+                
+                
             }
 
             tf_name.setText("");
@@ -559,9 +584,8 @@ public class SearchEngine extends javax.swing.JFrame {
             lb_warningA.setText("");
 
             //model.setRowCount(0);
+        }
 
-        }   
-        
         //refreash
         String msg = tf_search.getText();   //get search bar
         cbCategory = cb_category.getSelectedItem();
