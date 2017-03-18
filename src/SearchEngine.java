@@ -137,9 +137,16 @@ public class SearchEngine extends javax.swing.JFrame {
         tf_name.setEnabled(false);
         tf_lastname.setEnabled(false);
         tf_address.setEnabled(false);
-
-        sql = "SELECT * FROM profile where " + table + " like '%" + msg + "%'";
-        rs = stm.executeQuery(sql);
+        if (table.equals("Name-Lastname")) {//Name-Lastname
+            
+            System.out.println("in Name-Lastname 2");
+            sql = "SELECT * FROM profile where name like '%" + msg + "%' or lastname like '%"+msg+"%'";
+            rs = stm.executeQuery(sql);
+            System.out.println("in Name-Lastname 2");
+        } else {
+            sql = "SELECT * FROM profile where " + table + " like '%" + msg + "%'";
+            rs = stm.executeQuery(sql);
+        }
 
         while (rs.next()) {
             model.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)});
@@ -225,7 +232,7 @@ public class SearchEngine extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tb_result);
 
-        cb_category.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name", "Lastname", "Address" }));
+        cb_category.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name", "Lastname", "Address","Name-Lastname" }));
 
         bt_insert.setText("INSERT");
         bt_insert.addActionListener(new java.awt.event.ActionListener() {
@@ -534,7 +541,7 @@ public class SearchEngine extends javax.swing.JFrame {
             bt_update.setEnabled(false);
             bt_delete.setEnabled(false);
 
-            tf_search.setText("");
+            //tf_search.setText("");
             lb_warningA.setText("");
 
             //ดู index
@@ -548,11 +555,33 @@ public class SearchEngine extends javax.swing.JFrame {
                 System.out.println("Error delete : " + ex);
             }
 
-            tf_search.setText("");
+            //tf_search.setText("");
             lb_warningA.setText("");
 
-            model.setRowCount(0);
+            //model.setRowCount(0);
 
+        }   
+        
+        //refreash
+        String msg = tf_search.getText();   //get search bar
+        cbCategory = cb_category.getSelectedItem();
+
+        if (!(tf_search.getText().equals(""))) {
+            if (cbCategory != null) {
+                String selectedItemStr = cbCategory.toString();
+
+                System.out.println("test combobox : " + selectedItemStr);
+
+                try {
+                    searchProfile(selectedItemStr, msg);
+
+                } catch (SQLException se) {
+                    System.out.println("Error search : " + se);
+                }
+
+            }
+        } else {
+            lb_warningA.setText(" โปรดป้อนสิ่งที่ต้องการค้นหา");
         }
 
 
